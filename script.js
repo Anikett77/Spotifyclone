@@ -101,6 +101,10 @@ async function displayAlbums() {
                 songs = await getSongs(`songs/${folder}`);
                 if (songs.length > 0) {
                     playMusic(songs[0], true);
+                    // Only open sidebar on mobile
+                    if (window.matchMedia("(max-width: 1200px)").matches) {
+                        openSongLibrary(songs);
+                    }
                 }
             });
         });
@@ -113,7 +117,13 @@ async function displayAlbums() {
 
 // Main function
 async function main() {
-    await displayAlbums();
+    // await displayAlbums();
+
+    try {
+        await displayAlbums();
+    } catch (error) {
+        // console.error("Failed to display albums:", error);
+    }
 
     const firstCard = document.querySelector(".card");
     if (firstCard) {
@@ -189,4 +199,35 @@ async function main() {
     });
 }
 
+// Function to open and populate the song library
+function openSongLibrary(songs) {
+    const sidebar = document.querySelector('.song-library-sidebar');
+    const songList = document.querySelector('.sidebar-songlist');
+    
+    songList.innerHTML = ''; // Clear previous songs
+    
+    songs.forEach(song => {
+        const li = document.createElement('li');
+        li.textContent = song.replaceAll('%20', ' ');
+        li.addEventListener('click', () => {
+            playMusic(song);
+            sidebar.classList.remove('active'); // Close sidebar on song selection
+        });
+        songList.appendChild(li);
+    });
+    
+    sidebar.classList.add('active');
+}
+
 main();
+
+document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.querySelector('.song-library-sidebar');
+    const closeButton = document.querySelector('.close-sidebar');
+
+    if (closeButton) {
+        closeButton.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+        });
+    }
+});
