@@ -43,14 +43,18 @@ async function getSongs(folder) {
 }
 
 async function displayAlbums() {
+    console.log("📦 Trying to fetch albums.json");
 
     let res = await fetch("/albums.json");
     let albums = await res.json();
+     console.log("✅ albums loaded: ", albums);
 
     let cardContainer = document.querySelector(".cardContainer");
     cardContainer.innerHTML = "";
+     console.log("✅ albums loaded: ", albums);
 
     for (let album of albums) {
+        console.log("🎵 rendering album: ", album.title);
         cardContainer.innerHTML += `<div data-folder="${album.folder}" class="card">
           <div class="play1">
             <svg width="50" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
